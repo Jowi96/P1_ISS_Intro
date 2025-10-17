@@ -1,5 +1,35 @@
 # Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+      include:
+      - main
+
+  paths:
+    exclude:
+    - build-pipeline.yml
+    - release-pipeline.yml
+
+variables: 
+  vmImageName: 'ubuntu-latest' 
+ 
+jobs:   
+- job: Build 
+  pool: 
+    vmImage: $(vmImageName) 
+  steps: 
+  - script: |  
+      echo 'compile application' 
+    displayName: 'compile' 
+  - script: |  
+      echo 'do some unit test' 
+    displayName: 'unit test'
+
 - task: ArchiveFiles@2
+  displayName: 'Archive files'
   inputs:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
     includeRootFolder: false
@@ -9,22 +39,3 @@
 
 - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
   artifact: drop
-
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
-trigger:
-- main
-
-pool:
-  vmImage: ubuntu-latest
-
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
